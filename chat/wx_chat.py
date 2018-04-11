@@ -4,17 +4,17 @@ from wxpy import *
 import requests
 import traceback
 
-reply = False
 key = "81410c064db0455ca2debf20c5aa9972"
 session = requests.session()
-bot = Bot(console_qr=True)
+bot = Bot(console_qr=1)
 tuling = Tuling(api_key=key)
-# logger = logging.getLogger(__name__)
-#
-# # 初始化一个微信 Handler
-# wechat_handler = WeChatLoggingHandler()
-# # 加到入现有的 Logger
-# logger.addHandler(wechat_handler)
+# 找到需要接收日志的群 -- `ensure_one()` 用于确保找到的结果是唯一的，避免发错地方
+group_receiver = ensure_one(bot.groups().search('微信日志'))
+
+# 指定这个群为接收者
+logger = get_wechat_logger(group_receiver)
+
+logger.error('程序启动，测试日志...')
 
 fri = bot.friends()
 groups = bot.groups()
@@ -27,63 +27,32 @@ def reply_self(msg):
     try:
         deal_ret(msg)
     except:
-        # logger.exception('收到异常信息：'+msg.sender.nick_name+","+msg.text)
+        logger.error('收到异常信息：'+msg.sender.nick_name+","+msg.text)
         traceback.print_exc()
 @bot.register(fri)
 def reply_friend(msg):
     try:
         deal_ret(msg)
     except:
+        logger.error('收到异常信息：' + msg.sender.nick_name + "," + msg.text)
         traceback.print_exc()
 
 
 def deal_ret(msg):
-    global  reply
     # if msg.sender.nick_name == "Mr.One":
     if msg.text.upper().strip()  == "START":
-        # logger.info(msg.sender.nick_name+"开始了聊天")
-        reply = True
+        logger.error(msg.sender.nick_name+"开始了聊天")
         reply_list[msg.sender.nick_name] = True
+        logger.error("当前在线情况：" + str(reply_list))
     elif msg.text.upper().strip()  == "STOP":
-        # logger.info(msg.sender.nick_name + "结束了聊天")
-        reply = False
+        logger.error(msg.sender.nick_name + "结束了聊天")
         reply_list[msg.sender.nick_name] = False
+        logger.error("当前在线情况：" + str(reply_list))
     reply = reply_list.get(msg.sender.nick_name,False)
     if not reply:
         return
     tuling.do_reply(msg)
-    # data = {
-    #     'key': key,
-    #     'info': msg.text,
-    #     'loc':'天津市',
-    #     'userid':msg.sender.nick_name
-    # }
-    # result = session.post('http://www.tuling123.com/openapi/api', {'key': key, 'info': msg.text})
-    # ret = result.json()
-    # code = ret['code']
-    # text = ret['text']
-    #
-    # ret_msg = ''
-    # if code < 40008:
-    #     ret_msg = err_code[code]
-    # elif code == 100000:
-    #     ret_msg = text
-    # elif code == 200000:
-    #     ret_msg = text + ret['url']
-    # elif code >300000:
-    #     ret_msg = text
-    #     for item in ret['list']:
-    #         ret_msg += str(item)
-    #
-    # return ret_msg
 
-
-#
-# @bot.register(g, TEXT,except_self=False)
-# def print_group_msg(msg):
-#     if msg.is_at:
-#         print(msg)
-#         msg.reply(msg.text)
 
 # embed()
 bot.join()
