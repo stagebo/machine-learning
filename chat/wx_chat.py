@@ -9,6 +9,8 @@ key = "81410c064db0455ca2debf20c5aa9972"
 session = requests.session()
 bot = Bot(console_qr=1)
 tuling = Tuling(api_key=key)
+logger = get_wechat_logger()
+
 
 fri = bot.friends()
 groups = bot.groups()
@@ -21,38 +23,30 @@ def reply_self(msg):
     try:
         deal_ret(msg)
     except:
+        logger.exception('收到异常信息：'+msg.sender.nick_name+","+msg.text)
         traceback.print_exc()
 @bot.register(fri)
 def reply_friend(msg):
-    # tuling.do_reply(msg)
-    # return
     try:
         deal_ret(msg)
     except:
         traceback.print_exc()
 
 
-err_code = {
-    40001:'参数key错误',
-    40002:'请求内容info为空',
-    40004:'当天请求次数已使用完',
-    40007:'数据格式异常',
-}
 def deal_ret(msg):
     global  reply
     # if msg.sender.nick_name == "Mr.One":
-    if msg.text == "start":
+    if msg.text.upper().strip()  == "START":
+        logger.info(msg.sender.nick_name+"开始了聊天")
         reply = True
         reply_list[msg.sender.nick_name] = True
-        return "开始聊天"
-    elif msg.text == "stop":
+    elif msg.text.upper().strip()  == "STOP":
+        logger.info(msg.sender.nick_name + "结束了聊天")
         reply = False
         reply_list[msg.sender.nick_name] = False
-        return "结束聊天"
     reply = reply_list.get(msg.sender.nick_name,False)
     if not reply:
         return
-
     tuling.do_reply(msg)
     # data = {
     #     'key': key,
