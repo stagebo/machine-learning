@@ -7,10 +7,14 @@ import traceback
 reply = False
 key = "81410c064db0455ca2debf20c5aa9972"
 session = requests.session()
-bot = Bot(console_qr=1)
+bot = Bot(console_qr=True)
 tuling = Tuling(api_key=key)
-logger = get_wechat_logger()
-
+# logger = logging.getLogger(__name__)
+#
+# # 初始化一个微信 Handler
+# wechat_handler = WeChatLoggingHandler()
+# # 加到入现有的 Logger
+# logger.addHandler(wechat_handler)
 
 fri = bot.friends()
 groups = bot.groups()
@@ -23,7 +27,7 @@ def reply_self(msg):
     try:
         deal_ret(msg)
     except:
-        logger.exception('收到异常信息：'+msg.sender.nick_name+","+msg.text)
+        # logger.exception('收到异常信息：'+msg.sender.nick_name+","+msg.text)
         traceback.print_exc()
 @bot.register(fri)
 def reply_friend(msg):
@@ -37,11 +41,11 @@ def deal_ret(msg):
     global  reply
     # if msg.sender.nick_name == "Mr.One":
     if msg.text.upper().strip()  == "START":
-        logger.info(msg.sender.nick_name+"开始了聊天")
+        # logger.info(msg.sender.nick_name+"开始了聊天")
         reply = True
         reply_list[msg.sender.nick_name] = True
     elif msg.text.upper().strip()  == "STOP":
-        logger.info(msg.sender.nick_name + "结束了聊天")
+        # logger.info(msg.sender.nick_name + "结束了聊天")
         reply = False
         reply_list[msg.sender.nick_name] = False
     reply = reply_list.get(msg.sender.nick_name,False)
