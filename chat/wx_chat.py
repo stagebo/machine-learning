@@ -7,23 +7,29 @@ import traceback
 reply = False
 key = "81410c064db0455ca2debf20c5aa9972"
 session = requests.session()
-bot = Bot(console_qr=1)
+bot = Bot(console_qr=True)
 tuling = Tuling(api_key=key)
 
-fri = bot.friends().search("强")[0]
-fri = bot.friends().search("媳妇")[0]
+fri = bot.friends()
 groups = bot.groups()
 
 g = groups.search("坚强")[0]
+reply_list = {}
 # 回复发送给自己的消息，可以使用这个方法来进行测试机器人而不影响到他人
 @bot.register(bot.self, except_self=False)
 def reply_self(msg):
-    return deal_ret(msg)
+    try:
+        return deal_ret(msg)
+    except:
+        traceback.print_exc()
 @bot.register(fri)
 def reply_friend(msg):
-    ret = deal_ret(msg)
-    print("Me:%s"%ret)
-    return ret
+    try:
+        ret = deal_ret(msg)
+        print("Me:%s"%ret)
+        return ret
+    except:
+        traceback.print_exc()
 
 
 err_code = {
@@ -34,37 +40,37 @@ err_code = {
 }
 def deal_ret(msg):
     global  reply
-    try:
-        # if msg.sender.nick_name == "Mr.One":
-        if msg.text == "start":
-            reply = True
-            return "开始聊天"
-        elif msg.text == "stop":
-            reply = False
-            return "结束聊天"
-        if not reply:
-            return
-        result = session.post('http://www.tuling123.com/openapi/api', {'key': key, 'info': msg.text})
-        ret = result.json()
-        code = ret['code']
-        text = ret['text']
+    # if msg.sender.nick_name == "Mr.One":
+    if msg.text == "start":
+        reply = True
+        reply_list[msg.sender.nick_name] = True
+        return "开始聊天"
+    elif msg.text == "stop":
+        reply = False
+        reply_list[msg.sender.nick_name] = False
+        return "结束聊天"
+    reply = reply_list.get(msg.sender.nick_name,False)
+    if not reply:
+        return
+    result = session.post('http://www.tuling123.com/openapi/api', {'key': key, 'info': msg.text})
+    ret = result.json()
+    code = ret['code']
+    text = ret['text']
 
-        ret_msg = ''
-        if code < 40008:
-            ret_msg = err_code[code]
-        elif code == 100000:
-            ret_msg = text
-        elif code == 200000:
-            ret_msg = text + ret['url']
-        elif code >300000:
-            ret_msg = text
-            for item in ret['list']:
-                ret_msg += str(item)
+    ret_msg = ''
+    if code < 40008:
+        ret_msg = err_code[code]
+    elif code == 100000:
+        ret_msg = text
+    elif code == 200000:
+        ret_msg = text + ret['url']
+    elif code >300000:
+        ret_msg = text
+        for item in ret['list']:
+            ret_msg += str(item)
 
-        return ret_msg
-    except:
-        traceback.print_exc()
-        return '错误'
+    return ret_msg
+
 
 #
 # @bot.register(g, TEXT,except_self=False)
@@ -73,4 +79,5 @@ def deal_ret(msg):
 #         print(msg)
 #         msg.reply(msg.text)
 
-embed()
+# embed()
+bot.join()
