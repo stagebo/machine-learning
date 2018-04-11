@@ -7,7 +7,7 @@ import traceback
 reply = False
 key = "81410c064db0455ca2debf20c5aa9972"
 session = requests.session()
-bot = Bot(console_qr=True)
+bot = Bot(console_qr=1)
 tuling = Tuling(api_key=key)
 
 fri = bot.friends()
@@ -19,15 +19,15 @@ reply_list = {}
 @bot.register(bot.self, except_self=False)
 def reply_self(msg):
     try:
-        return deal_ret(msg)
+        deal_ret(msg)
     except:
         traceback.print_exc()
 @bot.register(fri)
 def reply_friend(msg):
+    # tuling.do_reply(msg)
+    # return
     try:
-        ret = deal_ret(msg)
-        print("Me:%s"%ret)
-        return ret
+        deal_ret(msg)
     except:
         traceback.print_exc()
 
@@ -52,24 +52,32 @@ def deal_ret(msg):
     reply = reply_list.get(msg.sender.nick_name,False)
     if not reply:
         return
-    result = session.post('http://www.tuling123.com/openapi/api', {'key': key, 'info': msg.text})
-    ret = result.json()
-    code = ret['code']
-    text = ret['text']
 
-    ret_msg = ''
-    if code < 40008:
-        ret_msg = err_code[code]
-    elif code == 100000:
-        ret_msg = text
-    elif code == 200000:
-        ret_msg = text + ret['url']
-    elif code >300000:
-        ret_msg = text
-        for item in ret['list']:
-            ret_msg += str(item)
-
-    return ret_msg
+    tuling.do_reply(msg)
+    # data = {
+    #     'key': key,
+    #     'info': msg.text,
+    #     'loc':'天津市',
+    #     'userid':msg.sender.nick_name
+    # }
+    # result = session.post('http://www.tuling123.com/openapi/api', {'key': key, 'info': msg.text})
+    # ret = result.json()
+    # code = ret['code']
+    # text = ret['text']
+    #
+    # ret_msg = ''
+    # if code < 40008:
+    #     ret_msg = err_code[code]
+    # elif code == 100000:
+    #     ret_msg = text
+    # elif code == 200000:
+    #     ret_msg = text + ret['url']
+    # elif code >300000:
+    #     ret_msg = text
+    #     for item in ret['list']:
+    #         ret_msg += str(item)
+    #
+    # return ret_msg
 
 
 #
