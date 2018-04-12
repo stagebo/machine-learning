@@ -262,3 +262,4 @@ __pycache__/
 
 .idea
 __pycache__
+app.conf
