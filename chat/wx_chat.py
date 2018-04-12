@@ -3,11 +3,13 @@
 from wxpy import *
 import requests
 import traceback
-
+import datetime
 key = "81410c064db0455ca2debf20c5aa9972"
 session = requests.session()
-bot = Bot(console_qr=1)
+bot = Bot(console_qr=1,cache_path=True)
+
 tuling = Tuling(api_key=key)
+xiaoi = XiaoI('yHAPUxbItyRT', 'LY1QEhtY3el8TcekBfOY')
 # 找到需要接收日志的群 -- `ensure_one()` 用于确保找到的结果是唯一的，避免发错地方
 group_receiver = ensure_one(bot.groups().search('微信日志'))
 
@@ -40,6 +42,7 @@ def reply_friend(msg):
 
 def deal_ret(msg):
     # if msg.sender.nick_name == "Mr.One":
+    logger.error(str(datetime.datetime.now())+"-"+msg.sender.nick_name + ": "+msg.text)
     if msg.text.upper().strip()  == "START":
         logger.error(msg.sender.nick_name+"开始了聊天")
         reply_list[msg.sender.nick_name] = True
@@ -49,9 +52,8 @@ def deal_ret(msg):
         reply_list[msg.sender.nick_name] = False
         logger.error("当前在线情况：" + str(reply_list))
     reply = reply_list.get(msg.sender.nick_name,False)
-    if not reply:
-        return
-    tuling.do_reply(msg)
+    if  reply:
+        tuling.do_reply(msg)
 
 
 # embed()
