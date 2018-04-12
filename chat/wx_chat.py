@@ -8,9 +8,11 @@ import send_qr
 import threading
 key = "81410c064db0455ca2debf20c5aa9972"
 session = requests.session()
-ta = threading.Thread(target=send_qr.send)      #创建一个线程ta，执行 threadfun()
-ta.start()
-bot = Bot()
+# ta = threading.Thread(target=send_qr.send)      #创建一个线程ta，执行 threadfun()
+# ta.start()
+
+bot = Bot(console_qr=True,qr_callback=send_qr.send)
+
 send_qr.send()
 
 tuling = Tuling(api_key=key)

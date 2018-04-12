@@ -1,7 +1,7 @@
 # coding=utf-8
 import smtplib
 from email.mime.text import MIMEText
-
+from PIL import Image
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
@@ -13,8 +13,11 @@ msg_from =cf.get('email','username')  # 发送方邮箱
 passwd = cf.get('email','password')  # 填入发送方邮箱的授权码
 msg_to =cf.get('email','username')  # 收件人邮箱
 print(msg_from,passwd)
-def send():
-    time.sleep(2)
+
+def send(uuid,status,qrcode):
+    binfile = open('qr.png','wb')
+    binfile.write(qrcode)
+    binfile.close()
     print("begin to send qr")
     subject = "python邮件测试"  # 主题
     msg = MIMEMultipart('related')
@@ -25,7 +28,7 @@ def send():
     msg['From'] = msg_from
     msg['To'] = msg_to
 
-    file = open("QR.png", "rb")
+    file = open("qr.png", "rb")
     img_data = file.read()
     file.close()
 
