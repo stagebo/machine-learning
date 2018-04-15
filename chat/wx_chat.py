@@ -7,13 +7,12 @@ import datetime
 import send_qr
 import threading
 key = "81410c064db0455ca2debf20c5aa9972"
-session = requests.session()
+# session = requests.session()
 # ta = threading.Thread(target=send_qr.send)      #创建一个线程ta，执行 threadfun()
 # ta.start()
 
-bot = Bot(console_qr=True,qr_callback=send_qr.send)
+bot = Bot(cache_path=True,qr_callback=send_qr.send)
 
-send_qr.send()
 
 tuling = Tuling(api_key=key)
 # xiaoi = XiaoI('yHAPUxbItyRT', 'LY1QEhtY3el8TcekBfOY')
@@ -29,16 +28,16 @@ groups = bot.groups()
 
 g = groups.search("坚强")[0]
 reply_list = {}
-qiang = ensure_one(fri.search("强"))
+# qiang = ensure_one(fri.search("强"))
 
 # 回复发送给自己的消息，可以使用这个方法来进行测试机器人而不影响到他人
 @bot.register(bot.self, except_self=False)
 def reply_self(msg):
-    words = 'can you catch what i have say.'
-    sent = list()
-    for i in words:
-        sen = qiang.send(i)  # 逐字发送
-        sen.recall()  # 全部撤回
+    # words = 'can you catch what i have say.'
+    # sent = list()
+    # for i in words:
+    #     sen = qiang.send(i)  # 逐字发送
+    #     sen.recall()  # 全部撤回
 
     try:
         deal_ret(msg)
