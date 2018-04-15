@@ -11,7 +11,7 @@ key = "81410c064db0455ca2debf20c5aa9972"
 # ta = threading.Thread(target=send_qr.send)      #创建一个线程ta，执行 threadfun()
 # ta.start()
 
-bot = Bot(cache_path=True,qr_callback=send_qr.send)
+bot = Bot(qr_callback=send_qr.send)
 
 
 tuling = Tuling(api_key=key)
