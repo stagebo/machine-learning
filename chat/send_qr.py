@@ -19,7 +19,7 @@ def send(uuid,status,qrcode):
     binfile.write(qrcode)
     binfile.close()
     print("begin to send qr")
-    subject = "python邮件测试"  # 主题
+    subject = "扫码登陆"  # 主题
     msg = MIMEMultipart('related')
     content = MIMEText('<html><body><img src="cid:imageid" alt="imageid"></body></html>', 'html', 'utf-8')  # 正文
     # msg = MIMEText(content)

@@ -26,7 +26,7 @@ logger.error('程序启动，测试日志...')
 fri = bot.friends()
 groups = bot.groups()
 
-g = groups.search("坚强")[0]
+# g = groups.search("坚强")[0]
 reply_list = {}
 # qiang = ensure_one(fri.search("强"))
 
@@ -53,10 +53,12 @@ def reply_friend(msg):
         traceback.print_exc()
 
 
-
+ms = None
 def deal_ret(msg):
+    global ms
+    ms =msg
     # if msg.sender.nick_name == "Mr.One":
-    logger.error(str(datetime.datetime.now())+"-"+msg.sender.nick_name + ": "+msg.text)
+    # logger.error(str(datetime.datetime.now())+"-"+msg.sender.nick_name + ": "+msg.text)
     if msg.text.upper().strip()  == "START":
         logger.error(msg.sender.nick_name+"开始了聊天")
         reply_list[msg.sender.nick_name] = True
@@ -70,5 +72,5 @@ def deal_ret(msg):
         tuling.do_reply(msg)
 
 
-# embed()
-bot.join()
+embed()
+# bot.join()
