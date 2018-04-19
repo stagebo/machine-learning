@@ -17,11 +17,11 @@ bot = Bot(qr_callback=send_qr.send)
 tuling = Tuling(api_key=key)
 # xiaoi = XiaoI('yHAPUxbItyRT', 'LY1QEhtY3el8TcekBfOY')
 # 找到需要接收日志的群 -- `ensure_one()` 用于确保找到的结果是唯一的，避免发错地方
-group_receiver = ensure_one(bot.groups().search('微信日志'))
+# group_receiver = ensure_one(bot.groups().search('微信日志'))
 # 指定这个群为接收者
-logger = get_wechat_logger(group_receiver)
+# logger = get_wechat_logger(group_receiver)
 
-logger.error('程序启动，测试日志...')
+# logger.error('程序启动，测试日志...')
 
 fri = bot.friends()
 groups = bot.groups()
@@ -42,14 +42,14 @@ def reply_self(msg):
     try:
         deal_ret(msg)
     except:
-        logger.error('收到异常信息：'+msg.sender.nick_name+","+msg.text)
+        # logger.error('收到异常信息：'+msg.sender.nick_name+","+msg.text)
         traceback.print_exc()
 @bot.register(fri)
 def reply_friend(msg):
     try:
         deal_ret(msg)
     except:
-        logger.error('收到异常信息：' + msg.sender.nick_name + "," + msg.text)
+        # logger.error('收到异常信息：' + msg.sender.nick_name + "," + msg.text)
         traceback.print_exc()
 
 
@@ -60,13 +60,13 @@ def deal_ret(msg):
     # if msg.sender.nick_name == "Mr.One":
     # logger.error(str(datetime.datetime.now())+"-"+msg.sender.nick_name + ": "+msg.text)
     if msg.text.upper().strip()  == "START":
-        logger.error(msg.sender.nick_name+"开始了聊天")
+        # logger.error(msg.sender.nick_name+"开始了聊天")
         reply_list[msg.sender.nick_name] = True
-        logger.error("当前在线情况：" + str(reply_list))
+        # logger.error("当前在线情况：" + str(reply_list))
     elif msg.text.upper().strip()  == "STOP":
-        logger.error(msg.sender.nick_name + "结束了聊天")
+        # logger.error(msg.sender.nick_name + "结束了聊天")
         reply_list[msg.sender.nick_name] = False
-        logger.error("当前在线情况：" + str(reply_list))
+        # logger.error("当前在线情况：" + str(reply_list))
     reply = reply_list.get(msg.sender.nick_name,False)
     if  reply:
         tuling.do_reply(msg)
